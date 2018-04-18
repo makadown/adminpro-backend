@@ -10,7 +10,9 @@
     "author": "Mario (makadown)",
     "license": "ISC",
     "dependencies": {
+        "body-parser": "^1.18.2",
         "express": "^4.16.3",
-        "mongoose": "^5.0.15"
+        "mongoose": "^5.0.15",
+        "mongoose-unique-validator": "^2.0.0"
     }
 }
