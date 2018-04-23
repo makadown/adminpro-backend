@@ -5,6 +5,8 @@ var bcrypt = require('bcryptjs');
 /* https://github.com/auth0/node-jsonwebtoken */
 var jwt = require('jsonwebtoken');
 
+var semilla = require('../config/config').SEED;
+
 var app = express();
 var Usuario = require('../models/usuario');
 
@@ -39,9 +41,10 @@ app.post('/', (req, res) => {
 
             // para no mandar la contraseña real en el token
             usuarioDB.password = '=)';
+
             // crear token
             var token = jwt.sign({ usuario: usuarioDB },
-                '@este-es@-un-seed-dificil', { expiresIn: 14400 } /*4 horas*/
+                semilla, { expiresIn: 14400 } /*4 horas*/
             );
 
             res.status(200).json({
@@ -50,6 +53,9 @@ app.post('/', (req, res) => {
                 token: token,
                 id: usuarioDB._id
             });
+
+            /* Se puede probar el token en https://jwt.io/  y en la firma poner
+               en la clave el valor de la semilla */
         });
 });
 
