@@ -9,6 +9,7 @@ var bodyParser = require('body-parser');
 var app = express();
 
 // Body Parser
+// parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -16,6 +17,7 @@ app.use(bodyParser.json());
 // Importar rutas
 var appRoutes = require('./routes/app');
 var usuarioRoutes = require('./routes/usuario');
+var loginRoutes = require('./routes/login');
 
 // Conexión a la BD
 mongoose.connection
@@ -29,6 +31,7 @@ mongoose.connection
 // Rutas
 app.use('/usuario', usuarioRoutes);
 app.use('/', appRoutes);
+app.use('/login', loginRoutes);
 
 // Escuchar peticiones
 app.listen(3000, () => {
