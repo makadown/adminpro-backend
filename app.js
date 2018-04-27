@@ -16,8 +16,11 @@ app.use(bodyParser.json());
 
 // Importar rutas
 var appRoutes = require('./routes/app');
+var medicoRoutes = require('./routes/medico');
+var hospitalRoutes = require('./routes/hospital');
 var usuarioRoutes = require('./routes/usuario');
 var loginRoutes = require('./routes/login');
+
 
 // Conexión a la BD
 mongoose.connection
@@ -29,9 +32,12 @@ mongoose.connection
     );
 
 // Rutas
+app.use('/medico', medicoRoutes);
+app.use('/hospital', hospitalRoutes);
 app.use('/usuario', usuarioRoutes);
 app.use('/', appRoutes);
 app.use('/login', loginRoutes);
+
 
 // Escuchar peticiones
 app.listen(3000, () => {
