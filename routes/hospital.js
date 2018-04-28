@@ -1,32 +1,31 @@
 /*jshint esversion: 6 */
 var express = require('express');
-var bcrypt = require('bcryptjs');
-
 var app = express();
 
 var Hospital = require('../models/hospital');
-var jwt = require('jsonwebtoken');
 var mdAutenticacion = require('../middlewares/autenticacion');
 
 app.get('/', (req, res, next) => {
 
-    Hospital.find({}, 'nombre img usuario').exec(
-        (err, hospitales) => {
+    Hospital.find({})
+        .populate('usuario', 'nombre email')
+        .exec(
+            (err, hospitales) => {
 
-            if (err) {
-                return res.status(500).json({
-                    ok: false,
-                    mensaje: 'Error al cargar hospitales.',
-                    errors: err
+                if (err) {
+                    return res.status(500).json({
+                        ok: false,
+                        mensaje: 'Error al cargar hospitales.',
+                        errors: err
+                    });
+                }
+
+                res.status(200).json({
+                    ok: true,
+                    hospitales: hospitales
                 });
-            }
 
-            res.status(200).json({
-                ok: true,
-                hospitales: hospitales
             });
-
-        });
 
 
 });
@@ -39,7 +38,6 @@ app.post('/', mdAutenticacion.verificaToken, (req, res) => {
 
     var hospital = new Hospital({
         nombre: body.nombre,
-        img: body.img,
         usuario: req.usuario._id
     });
 
@@ -52,11 +50,9 @@ app.post('/', mdAutenticacion.verificaToken, (req, res) => {
             });
         }
 
-        /* usuariotoken es el usuario que realizó la operación de alta de hospital */
         res.status(201).json({
             ok: true,
-            hospital: hospitalGuardado,
-            usuariotoken: req.usuario
+            hospital: hospitalGuardado
         });
     });
 });
@@ -85,7 +81,6 @@ app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
         }
 
         hospital.nombre = body.nombre;
-        hospital.img = body.img;
         hospital.usuario = req.usuario._id;
 
         hospital.save((err, hospitalGuardado) => {
@@ -98,12 +93,9 @@ app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
                 });
             }
 
-            hospitalGuardado.password = ':)';
-
             res.status(200).json({
                 ok: true,
-                hospital: hospitalGuardado,
-                usuariotoken: req.usuario
+                hospital: hospitalGuardado
             });
 
         });
@@ -136,8 +128,7 @@ app.delete('/:id', mdAutenticacion.verificaToken, (req, res) => {
 
         res.status(200).json({
             ok: true,
-            hospital: hospitalBorrado,
-            usuariotoken: req.usuario
+            hospital: hospitalBorrado
         });
     });
 });

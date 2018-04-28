@@ -1,32 +1,33 @@
 /*jshint esversion: 6 */
 var express = require('express');
-var bcrypt = require('bcryptjs');
 
 var app = express();
 
 var Medico = require('../models/medico');
-var jwt = require('jsonwebtoken');
 var mdAutenticacion = require('../middlewares/autenticacion');
 
 app.get('/', (req, res, next) => {
 
-    Medico.find({}, 'nombre img usuario hospital').exec(
-        (err, medicos) => {
+    Medico.find({})
+        .populate('usuario', 'nombre email')
+        .populate('hospital', 'nombre')
+        .exec(
+            (err, medicos) => {
 
-            if (err) {
-                return res.status(500).json({
-                    ok: false,
-                    mensaje: 'Error al cargar medicos.',
-                    errors: err
+                if (err) {
+                    return res.status(500).json({
+                        ok: false,
+                        mensaje: 'Error al cargar medicos.',
+                        errors: err
+                    });
+                }
+
+                res.status(200).json({
+                    ok: true,
+                    medicos: medicos
                 });
-            }
 
-            res.status(200).json({
-                ok: true,
-                medicos: medicos
             });
-
-        });
 
 
 });
@@ -39,9 +40,8 @@ app.post('/', mdAutenticacion.verificaToken, (req, res) => {
 
     var medico = new Medico({
         nombre: body.nombre,
-        img: body.img,
         usuario: req.usuario._id,
-        hospital: body.hospital_id
+        hospital: body.hospital
     });
 
     medico.save((err, medicoGuardado) => {
@@ -53,11 +53,9 @@ app.post('/', mdAutenticacion.verificaToken, (req, res) => {
             });
         }
 
-        /* usuariotoken es el usuario que realizó la operación de alta de medico */
         res.status(201).json({
             ok: true,
-            medico: medicoGuardado,
-            usuariotoken: req.usuario
+            medico: medicoGuardado
         });
     });
 });
@@ -86,9 +84,8 @@ app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
         }
 
         medico.nombre = body.nombre;
-        medico.img = body.img;
         medico.usuario = req.usuario._id;
-        medico.hospital = body.hospital_id;
+        medico.hospital = body.hospital;
 
         medico.save((err, medicoGuardado) => {
 
@@ -104,8 +101,7 @@ app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
 
             res.status(200).json({
                 ok: true,
-                medico: medicoGuardado,
-                usuariotoken: req.usuario
+                medico: medicoGuardado
             });
 
         });
@@ -138,8 +134,7 @@ app.delete('/:id', mdAutenticacion.verificaToken, (req, res) => {
 
         res.status(200).json({
             ok: true,
-            medico: medicoBorrado,
-            usuariotoken: req.usuario
+            medico: medicoBorrado
         });
     });
 });
