@@ -8,7 +8,12 @@ var mdAutenticacion = require('../middlewares/autenticacion');
 
 app.get('/', (req, res, next) => {
 
+    var desde = req.query.desde || 0;
+    desde = Number(desde);
+
     Medico.find({})
+        .skip(desde)
+        .limit(5)
         .populate('usuario', 'nombre email')
         .populate('hospital', 'nombre')
         .exec(
@@ -22,9 +27,12 @@ app.get('/', (req, res, next) => {
                     });
                 }
 
-                res.status(200).json({
-                    ok: true,
-                    medicos: medicos
+                Medico.count({}, (err, conteo) => {
+                    res.status(200).json({
+                        ok: true,
+                        medicos: medicos,
+                        total: conteo
+                    });
                 });
 
             });
