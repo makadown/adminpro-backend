@@ -37,31 +37,6 @@ app.get('/coleccion/:tabla/:busqueda', (req, res, next) => {
             [tabla]: data
         });
     });
-    /*
-        if (tabla.toUpperCase() === "HOSPITAL") {
-
-            buscarHospitales(busqueda, regex).then((err, hospitales) => {
-                res.status(200).json({
-                    ok: true,
-                    hospitales: hospitales
-                });
-            });
-
-        } else if (tabla.toUpperCase() === "MEDICO") {
-            buscarMedicos(busqueda, regex).then((err, medicos) => {
-                res.status(200).json({
-                    ok: true,
-                    medicos: medicos
-                });
-            });
-        } else if (tabla.toUpperCase() === "USUARIO") {
-
-        } else {
-            res.status(405).json({
-                ok: false,
-                mensaje: "Forma de búsqueda no permitida"
-            });
-        }*/
 
 });
 
