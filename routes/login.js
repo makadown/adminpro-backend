@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 var express = require('express');
 var bcrypt = require('bcryptjs');
 
@@ -47,11 +48,67 @@ app.post('/google', async(req, res) => {
             });
         });
 
+    Usuario.findOne({ email: googleUser.email },
+        (err, usuarioDB) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error al buscar usuarios.',
+                    errors: err
+                });
+            }
+
+            if (usuarioDB) {
+                if (usuarioDB.google === false) {
+                    return res.status(400).json({
+                        ok: false,
+                        mensaje: 'Debe usar su autenticación normal.'
+                    });
+                } else {
+                    // crear token
+                    var token = jwt.sign({ usuario: usuarioDB },
+                        semilla, { expiresIn: 14400 } /*4 horas*/
+                    );
+
+                    res.status(200).json({
+                        ok: true,
+                        usuario: usuarioDB,
+                        token: token,
+                        id: usuarioDB._id
+                    });
+                }
+            } else {
+                // El usuario no existe y hay que crearlo   
+                var usuario = new Usuario();
+                usuario.nombre = googleUser.nombre;
+                usuario.email = googleUser.email;
+                usuario.img = googleUser.img;
+                usuario.password = '=)';
+                usuario.google = googleUser.google;
+
+                usuario.save((err, usuarioDB) => {
+                    // crear token
+                    var token = jwt.sign({ usuario: usuarioDB },
+                        semilla, { expiresIn: 14400 } /*4 horas*/
+                    );
+
+                    res.status(200).json({
+                        ok: true,
+                        usuario: usuarioDB,
+                        token: token,
+                        id: usuarioDB._id
+                    });
+                });
+            }
+        });
+
+    /*
     res.status(200).json({
         ok: true,
         mensaje: 'Ok!',
         googleUser: googleUser
     });
+    */
 });
 
 /* Autenticación normal */
