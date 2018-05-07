@@ -17,6 +17,7 @@ var Usuario = require('../models/usuario');
 
 /* Autenticación de google */
 async function verify(token) {
+
     //el await es una promesa
     const ticket = await client.verifyIdToken({
         idToken: token,
@@ -38,7 +39,9 @@ async function verify(token) {
 
 app.post('/google', async(req, res) => {
 
-    var token = req.body.token;
+    const token = req.body.token;
+
+    //console.log('Token recibido ', token);
 
     var googleUser = await verify(token)
         .catch(e => {

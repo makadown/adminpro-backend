@@ -45,8 +45,12 @@ app.get('/', (req, res, next) => {
 });
 
 
-// Crear nuevo usuario.
-app.post('/', mdAutenticacion.verificaToken, (req, res) => {
+/* Crear nuevo usuario. Cualquiera puede crear usuario (para sitios donde te registras )
+ Si solo los admins hicieran eso, se haria asi:
+ app.post('/', mdAutenticacion.verificaToken, (req, res) => {
+*/
+app.post('/', (req, res) => {
+
 
     var body = req.body;
 
