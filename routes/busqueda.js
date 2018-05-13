@@ -7,6 +7,7 @@ var Medico = require('../models/medico');
 var Usuario = require('../models/usuario');
 
 app.get('/coleccion/:tabla/:busqueda', (req, res, next) => {
+    /*TODO: meter funcionalidad de paginacion */
     var tabla = req.params.tabla;
     var busqueda = req.params.busqueda;
     var regex = new RegExp(busqueda, 'i');
@@ -108,7 +109,7 @@ function buscarUsuarios(busqueda, regex) {
 
     return new Promise((resolve, reject) => {
 
-        Usuario.find({}, 'nombre email').or([
+        Usuario.find({}, 'nombre email img role google').or([
             { 'nombre': regex },
             { 'email': regex }
         ]).exec((err, usuarios) => {
