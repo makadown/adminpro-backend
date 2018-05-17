@@ -68,6 +68,43 @@ app.post('/', mdAutenticacion.verificaToken, (req, res) => {
     });
 });
 
+// Obtener medico dado el id
+app.get('/:id', (req, res) => {
+
+    var id = req.params.id;
+    // var body = req.body;
+
+    Medico.findById(id)
+        .populate('usuario', 'nombre email img')
+        .populate('hospital')
+        .exec((err, medico) => {
+
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error al buscar medico.',
+                    errors: err
+                });
+            }
+
+            if (!medico) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'No se encuentra medico con el id ' + id + '.',
+                    errors: { message: 'No existe medico con ese ID' }
+                });
+            }
+
+            res.status(200).json({
+                ok: true,
+                medico: medico
+            });
+
+        });
+
+
+});
+
 // Actualizar un Medico 
 app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
     var id = req.params.id;
