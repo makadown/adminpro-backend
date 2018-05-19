@@ -77,7 +77,8 @@ app.post('/google', async(req, res) => {
                         ok: true,
                         usuario: usuarioDB,
                         token: token,
-                        id: usuarioDB._id
+                        id: usuarioDB._id,
+                        menu: obtenerMenu(usuarioDB.role)
                     });
                 }
             } else {
@@ -99,19 +100,12 @@ app.post('/google', async(req, res) => {
                         ok: true,
                         usuario: usuarioDB,
                         token: token,
-                        id: usuarioDB._id
+                        id: usuarioDB._id,
+                        menu: obtenerMenu(usuarioDB.role)
                     });
                 });
             }
         });
-
-    /*
-    res.status(200).json({
-        ok: true,
-        mensaje: 'Ok!',
-        googleUser: googleUser
-    });
-    */
 });
 
 /* Autenticación normal */
@@ -156,13 +150,48 @@ app.post('/', (req, res) => {
                 ok: true,
                 usuario: usuarioDB,
                 token: token,
-                id: usuarioDB._id
+                id: usuarioDB._id,
+                menu: obtenerMenu(usuarioDB.role)
             });
 
             /* Se puede probar el token en https://jwt.io/  y en la firma poner
                en la clave el valor de la semilla */
         });
 });
+
+
+function obtenerMenu(ROLE) {
+    // No acepta el typescript de   " menu: any ""
+    var menu = [{
+            titulo: 'Principal',
+            icono: 'mdi mdi-gauge',
+            submenu: [
+                { titulo: 'Dashboard', url: '/dashboard' },
+                { titulo: 'ProgressBar', url: '/progress' },
+                { titulo: 'Gráficas', url: '/graficas1' },
+                { titulo: 'Promesas', url: '/promesas' },
+                { titulo: 'RxJs', url: '/rxjs' }
+            ]
+        },
+        {
+            titulo: 'Mantenimientos',
+            icono: 'mdi mdi-folder-lock-open',
+            submenu: [
+                // { titulo: 'Usuarios', url: '/usuarios' },
+                { titulo: 'Hospitales', url: '/hospitales' },
+                { titulo: 'Medicos', url: '/medicos' }
+            ]
+        }
+    ];
+
+    if (ROLE === 'ADMIN_ROLE') {
+        // Push - pone al final.
+        // Unshift - lo pone al principio.        
+        menu[1].submenu.unshift({ titulo: 'Usuarios', url: '/usuarios' });
+    }
+
+    return menu;
+}
 
 
 module.exports = app;
