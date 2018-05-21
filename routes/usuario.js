@@ -81,7 +81,9 @@ app.post('/', (req, res) => {
 });
 
 // Actualizar un usuario 
-app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
+app.put('/:id', [mdAutenticacion.verificaToken,
+    mdAutenticacion.verificaADMIN_o_MismoUsuario
+], (req, res) => {
     var id = req.params.id;
     var body = req.body;
 
@@ -98,8 +100,8 @@ app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
         if (!usuario) {
             return res.status(400).json({
                 ok: false,
-                mensaje: 'No se encuentra usuario con el id ' + id + '.',
-                errors: { message: 'No existe usuario con ese ID' }
+                mensaje: 'Error al crear.',
+                errors: { message: 'No existe usuario' }
             });
         }
 
@@ -112,7 +114,7 @@ app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
             if (err) {
                 return res.status(400).json({
                     ok: false,
-                    mensaje: 'Error al actualizar usuario con el id ' + id + '.',
+                    mensaje: 'Error al actualizar.',
                     errors: err
                 });
             }
@@ -131,7 +133,9 @@ app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
 });
 
 // Eliminar usuario por id
-app.delete('/:id', mdAutenticacion.verificaToken, (req, res) => {
+app.delete('/:id', [mdAutenticacion.verificaToken,
+    mdAutenticacion.verificaADMIN_ROLE
+], (req, res) => {
 
     var id = req.params.id;
 

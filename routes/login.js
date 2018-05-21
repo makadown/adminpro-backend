@@ -127,14 +127,14 @@ app.post('/', (req, res) => {
             if (!usuarioDB) {
                 return res.status(400).json({
                     ok: false,
-                    mensaje: 'Credenciales incorrectas - email' //quitarlo en produccion (email)
+                    mensaje: 'Credenciales incorrectas' // (email)
                 });
             }
 
             if (!bcrypt.compareSync(body.password, usuarioDB.password)) {
                 return res.status(400).json({
                     ok: false,
-                    mensaje: 'Credenciales incorrectas - password' //quitarlo en produccion (password)
+                    mensaje: 'Credenciales incorrectas' // (password)
                 });
             }
 
