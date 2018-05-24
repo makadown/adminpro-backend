@@ -1,6 +1,7 @@
 /*jshint esversion: 6 */
 var express = require('express');
 var bcrypt = require('bcryptjs');
+var mdAutenticacion = require('../middlewares/autenticacion');
 
 /* https://github.com/auth0/node-jsonwebtoken */
 var jwt = require('jsonwebtoken');
@@ -36,6 +37,25 @@ async function verify(token) {
         google: true
     }
 }
+
+
+
+app.get('/renuevatoken', mdAutenticacion.verificaToken, (req, res) => {
+
+    // crear token
+    var token = jwt.sign({ usuario: req.usuario },
+        semilla, { expiresIn: 14400 } /*4 horas*/
+    );
+
+    res.status(200).json({
+        ok: true,
+        usuario: req.usuario,
+        token: token,
+        id: req.usuario._id,
+        menu: obtenerMenu(req.usuario.role)
+    });
+
+});
 
 app.post('/google', async(req, res) => {
 
