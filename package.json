@@ -19,6 +19,6 @@
         "jsonwebtoken": "^8.2.1",
         "mongoose": "^5.0.17",
         "mongoose-unique-validator": "^2.0.1",
-        "npm": "^6.0.1"
+        "npm": "^6.14.6"
     }
 }
