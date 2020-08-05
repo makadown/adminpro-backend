@@ -14,7 +14,7 @@
         "body-parser": "^1.18.2",
         "esprima": "^4.0.0",
         "express": "^4.16.3",
-        "express-fileupload": "^0.4.0",
+        "express-fileupload": "^1.1.9",
         "google-auth-library": "^1.4.0",
         "jsonwebtoken": "^8.2.1",
         "mongoose": "^5.7.5",
